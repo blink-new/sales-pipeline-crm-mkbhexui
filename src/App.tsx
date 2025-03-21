@@ -1,51 +1,95 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { Header } from './components/ui/header'
-import { Sidebar } from './components/ui/sidebar'
+import { useState } from 'react'
+import { LucideIcon, Home, PieChart, Users, FolderKanban, Settings, Bell, Search } from 'lucide-react'
 
-// Pages
-function Dashboard() {
-  return (
-    <div className="p-6">
-      <h1 className="mb-6 text-2xl font-semibold text-white">Dashboard</h1>
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-        {[
-          { title: 'Total Deals', value: '$124,400' },
-          { title: 'Open Deals', value: '24' },
-          { title: 'Closed Deals', value: '12' },
-          { title: 'Win Rate', value: '64%' },
-        ].map((stat, i) => (
-          <div
-            key={i}
-            className="rounded-xl bg-gray-900 p-6 shadow-sm ring-1 ring-gray-800"
-          >
-            <p className="text-sm font-medium text-gray-400">{stat.title}</p>
-            <p className="mt-2 text-3xl font-semibold text-white">{stat.value}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
+interface NavItem {
+  icon: LucideIcon
+  label: string
+  href: string
 }
 
+const navItems: NavItem[] = [
+  { icon: Home, label: 'Dashboard', href: '/' },
+  { icon: FolderKanban, label: 'Pipeline', href: '/pipeline' },
+  { icon: Users, label: 'Contacts', href: '/contacts' },
+  { icon: PieChart, label: 'Analytics', href: '/analytics' },
+  { icon: Settings, label: 'Settings', href: '/settings' },
+]
+
 function App() {
+  const [activeNav, setActiveNav] = useState('/')
+
   return (
-    <Router>
-      <div className="flex h-screen bg-gray-950 text-gray-100">
-        <Sidebar />
-        <div className="flex flex-1 flex-col overflow-hidden">
-          <Header />
-          <main className="flex-1 overflow-auto">
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/pipeline" element={<div className="p-6">Pipeline View (Coming Soon)</div>} />
-              <Route path="/contacts" element={<div className="p-6">Contacts (Coming Soon)</div>} />
-              <Route path="/analytics" element={<div className="p-6">Analytics (Coming Soon)</div>} />
-              <Route path="/settings" element={<div className="p-6">Settings (Coming Soon)</div>} />
-            </Routes>
-          </main>
+    <div className="min-h-screen bg-background">
+      {/* Sidebar */}
+      <aside className="fixed left-0 top-0 z-40 h-screen w-64 border-r bg-card">
+        <div className="flex h-16 items-center border-b px-6">
+          <h1 className="text-xl font-bold">Sales CRM</h1>
         </div>
+        <nav className="space-y-1 p-4">
+          {navItems.map((item) => (
+            <a
+              key={item.href}
+              href={item.href}
+              onClick={(e) => {
+                e.preventDefault()
+                setActiveNav(item.href)
+              }}
+              className={`flex items-center space-x-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                activeNav === item.href
+                  ? 'bg-secondary text-secondary-foreground'
+                  : 'text-muted-foreground hover:bg-secondary/50'
+              }`}
+            >
+              <item.icon className="h-4 w-4" />
+              <span>{item.label}</span>
+            </a>
+          ))}
+        </nav>
+      </aside>
+
+      {/* Main Content */}
+      <div className="pl-64">
+        {/* Header */}
+        <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-card px-6">
+          <div className="flex items-center space-x-4">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <input
+                type="search"
+                placeholder="Search..."
+                className="h-9 rounded-md border bg-background pl-8 pr-3 text-sm focus:outline-none focus:ring-1"
+              />
+            </div>
+          </div>
+          <div className="flex items-center space-x-4">
+            <button className="relative rounded-full p-2 hover:bg-secondary">
+              <Bell className="h-5 w-5" />
+              <span className="absolute right-1 top-1 h-2 w-2 rounded-full bg-destructive" />
+            </button>
+            <div className="h-8 w-8 rounded-full bg-secondary" />
+          </div>
+        </header>
+
+        {/* Dashboard Content */}
+        <main className="p-6">
+          <div className="grid gap-6">
+            <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {/* Metric Cards */}
+              {['Total Deals', 'Active Deals', 'Won This Month', 'Pipeline Value'].map((metric) => (
+                <div key={metric} className="rounded-lg border bg-card p-6">
+                  <div className="text-sm font-medium text-muted-foreground">{metric}</div>
+                  <div className="mt-2 text-2xl font-bold">
+                    {metric.includes('Value') ? '$125,000' : '24'}
+                  </div>
+                  <div className="mt-1 text-xs text-muted-foreground">+12% from last month</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </main>
       </div>
-    </Router>
+    </div>
   )
 }
 
