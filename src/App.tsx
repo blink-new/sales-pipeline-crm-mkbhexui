@@ -1,16 +1,21 @@
-import { BrowserRouter as Router } from 'react-router-dom';
-import { Sidebar } from './components/layout/sidebar';
-import { Dashboard } from './pages/dashboard';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { MainLayout } from './components/layout/MainLayout'
+import { Dashboard } from './pages/Dashboard'
+import { Contacts } from './pages/Contacts'
+import { Deals } from './pages/Deals'
 
 export default function App() {
   return (
     <Router>
-      <div className="flex h-screen bg-zinc-50 dark:bg-zinc-900">
-        <Sidebar />
-        <main className="flex-1 overflow-y-auto p-8">
-          <Dashboard />
-        </main>
-      </div>
+      <Routes>
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<Dashboard />} />
+          <Route path="contacts" element={<Contacts />} />
+          <Route path="deals" element={<Deals />} />
+          <Route path="calendar" element={<div className="text-white">Calendar (Coming Soon)</div>} />
+          <Route path="settings" element={<div className="text-white">Settings (Coming Soon)</div>} />
+        </Route>
+      </Routes>
     </Router>
-  );
+  )
 }
