@@ -30,11 +30,9 @@ export default defineConfig({
       usePolling: true,
     },
     hmr: {
-      protocol: 'wss',
-      clientPort: 443,
-      timeout: 120000
+      protocol: 'ws',
+      host: 'localhost',
     },
-    allowedHosts: ['.blink.new']
   },
   preview: {
     port: 3000,
@@ -44,5 +42,12 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     sourcemap: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom'],
+        },
+      },
+    },
   }
 })
